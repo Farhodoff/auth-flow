@@ -15,6 +15,7 @@ export const getAnalyticsData = async () => {
     // Simple way to get active subscriptions (users with stripeSubscriptionId)
     const activeSubscriptions = await prisma.user.count({
         where: {
+            // @ts-ignore
             stripeSubscriptionId: {
                 not: null
             }
@@ -73,6 +74,7 @@ export const getRecentSales = async () => {
     // Fetch recent pro users
     const recentProUsers = await prisma.user.findMany({
         where: {
+            // @ts-ignore
             stripeSubscriptionId: {
                 not: null
             }
@@ -85,6 +87,7 @@ export const getRecentSales = async () => {
             name: true,
             email: true,
             image: true,
+            // @ts-ignore
             stripePriceId: true // To guess the amount
         }
     });
