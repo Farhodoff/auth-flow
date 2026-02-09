@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Role } from "@prisma/client";
 import type { AdapterUser } from "@auth/core/adapters";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
@@ -34,7 +34,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                 const user = await prisma.user.findUnique({
                     where: { email: credentials.email as string },
-                }) as any;
+                });
 
                 if (!user || !user.password) {
                     return null;
@@ -67,23 +67,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
             const existingUser = await prisma.user.findUnique({
                 where: { id: user.id }
-            }) as any;
+            });
 
             // Check if user is blocked
             if (existingUser?.isBlocked) {
                 return false;
             }
 
-            // 2FA Check
             if (existingUser?.isTwoFactorEnabled) {
-                const twoFactorConfirmation = await (prisma as any).twoFactorConfirmation.findUnique({
+                const twoFactorConfirmation = await prisma.twoFactorConfirmation.findUnique({
                     where: { userId: existingUser.id }
                 });
 
                 if (!twoFactorConfirmation) return false;
 
                 // Delete confirmation for next sign in
-                await (prisma as any).twoFactorConfirmation.delete({
+                await prisma.twoFactorConfirmation.delete({
                     where: { id: twoFactorConfirmation.id }
                 });
             }
@@ -102,7 +101,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 session.user.id = token.id as string;
                 // Use cast to any to avoid "Role" import issues if direct import fails
                 // The underlying value is compatible
-                session.user.role = token.role as any;
+                session.user.role = token.role as Role;
             }
             return session;
         },

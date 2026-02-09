@@ -13,7 +13,7 @@ export const getAnalyticsData = async () => {
     const totalUsers = await prisma.user.count();
 
     // Simple way to get active subscriptions (users with stripeSubscriptionId)
-    const activeSubscriptions = await (prisma.user as any).count({
+    const activeSubscriptions = await prisma.user.count({
         where: {
             stripeSubscriptionId: {
                 not: null
@@ -71,7 +71,7 @@ export const getRecentSales = async () => {
     }
 
     // Fetch recent pro users
-    const recentProUsers = await (prisma.user as any).findMany({
+    const recentProUsers = await prisma.user.findMany({
         where: {
             stripeSubscriptionId: {
                 not: null
@@ -89,7 +89,7 @@ export const getRecentSales = async () => {
         }
     });
 
-    return recentProUsers.map((user: any) => ({
+    return recentProUsers.map(user => ({
         name: user.name || "Unknown",
         email: user.email,
         amount: "+$20.00", // Hardcoded for demo

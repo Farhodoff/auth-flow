@@ -1,5 +1,6 @@
 "use server";
 
+import { rateLimit } from "@/lib/rate-limit";
 import { signIn } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
@@ -14,6 +15,16 @@ export const login = async (values: any, callbackUrl?: string | null) => {
     if (!email || !password) {
         return { error: "Email and password are required!" };
     }
+
+    // Rate Limiting
+    const identifier = email; // Rate limit by email
+    const { success, expiresAt } = await rateLimit(identifier);
+
+    if (!success) {
+        return { error: "Too many attempts. Try again later." };
+    }
+
+
 
     const existingUser = await prisma.user.findUnique({
         where: { email }
