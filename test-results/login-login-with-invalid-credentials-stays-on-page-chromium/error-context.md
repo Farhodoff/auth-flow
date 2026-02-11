@@ -1,0 +1,47 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - navigation [ref=e6]:
+    - generic [ref=e7]:
+      - button "Open menu" [ref=e8] [cursor=pointer]
+      - generic [ref=e12]: AuthFlow
+      - button "Get Started" [ref=e13] [cursor=pointer]
+  - generic [ref=e17]:
+    - generic [ref=e18]:
+      - generic [ref=e19]: A
+      - heading "Welcome back" [level=1] [ref=e20]
+      - paragraph [ref=e21]: Sign in to your account to continue
+    - generic [ref=e22]:
+      - generic [ref=e23]:
+        - generic [ref=e24]:
+          - text: Email
+          - textbox "name@example.com" [disabled] [ref=e25]: invalid@example.com
+        - generic [ref=e26]:
+          - text: Password
+          - textbox "********" [disabled] [ref=e27]: wrongpassword
+        - link "Forgot password?" [ref=e29] [cursor=pointer]:
+          - /url: /auth/reset
+        - button "Signing in..." [disabled] [ref=e30]
+      - generic [ref=e35]: Or continue with
+      - generic [ref=e36]:
+        - button "Google" [ref=e38]:
+          - img [ref=e39]
+          - text: Google
+        - button "GitHub" [ref=e45]:
+          - img [ref=e46]
+          - text: GitHub
+    - generic [ref=e48]:
+      - text: Don't have an account?
+      - link "Sign up" [ref=e49] [cursor=pointer]:
+        - /url: /register
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e55] [cursor=pointer]:
+    - generic [ref=e58]:
+      - text: Compiling
+      - generic [ref=e59]:
+        - generic [ref=e60]: .
+        - generic [ref=e61]: .
+        - generic [ref=e62]: .
+  - alert [ref=e63]
+```
