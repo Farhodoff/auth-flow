@@ -10,3 +10,14 @@ yarn-error.log*
 
 # Prisma
 prisma/migrations/
+
+# Build Artifacts
+dist/
+build/
+frontend/dist/
+backend/dist/
+
+# Test Reports
+playwright-report/
+test-results/
+coverage/
