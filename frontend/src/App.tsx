@@ -4,15 +4,17 @@ import { ThemeProvider } from './components/theme-provider';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 
-// Placeholder pages (will be replaced by actual components)
-const Home = () => <div className="p-4">Home Page</div>;
-const Login = () => <div className="p-4">Login Page</div>;
-const Register = () => <div className="p-4">Register Page</div>;
-const Dashboard = () => <div className="p-4">Dashboard</div>;
-const Profile = () => <div className="p-4">Profile</div>;
-const Settings = () => <div className="p-4">Settings</div>;
-const Pricing = () => <div className="p-4">Pricing</div>;
-const Docs = () => <div className="p-4">Docs</div>;
+
+// Pages
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import Profile from './pages/Profile';
+import Settings from './pages/Settings';
+import Pricing from './pages/Pricing';
+import Docs from './pages/Docs';
+
 
 function App() {
   return (

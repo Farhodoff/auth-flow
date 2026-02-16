@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "echo 'Please run backend and frontend in separate terminals: npm run dev:backend and npm run dev:frontend' && exit 1",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:legacy": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

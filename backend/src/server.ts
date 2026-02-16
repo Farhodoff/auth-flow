@@ -5,6 +5,12 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
 
+// Route imports
+import authRoutes from './routes/auth';
+import userRoutes from './routes/user';
+import uploadRoutes from './routes/upload';
+import stripeRoutes from './routes/stripe';
+
 // Load environment variables
 dotenv.config();
 
@@ -31,6 +37,10 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
+// Stripe webhook needs raw body (must be before express.json)
+app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }));
+app.use('/api/stripe', stripeRoutes);
+
 // Body parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -41,20 +51,12 @@ app.get('/health', (_req: Request, res: Response) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Import routes
-import authRoutes from './routes/auth';
-import userRoutes from './routes/user';
-import stripeRoutes from './routes/stripe';
-import uploadRoutes from './routes/upload';
+
 
 // Register API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/upload', uploadRoutes);
-
-// Stripe webhook needs raw body
-app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }));
-app.use('/api/stripe', stripeRoutes);
 
 
 // 404 handler
