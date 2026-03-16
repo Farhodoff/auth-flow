@@ -32,26 +32,37 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                     return null;
                 }
 
+                // ── Account-lock check (brute-force protection) ──────────────
+                //  This is a secondary guard — the action layer checks first,
+                //  but we also check here so direct API calls are protected too.
+                const lock = await (prisma as any).rateLimit.findUnique({
+                    where: { identifier: `account:${(credentials.email as string).toLowerCase().trim()}` },
+                });
+
+                const now = new Date();
+                if (lock?.lockedUntil && lock.lockedUntil > now) {
+                    // Do NOT reveal lock status — just refuse
+                    return null;
+                }
+
+                // ── Look up user ─────────────────────────────────────────────
                 const user = await prisma.user.findUnique({
                     where: { email: credentials.email as string },
                 });
 
-                if (!user || !user.password) {
+                // Always hash-compare to avoid timing attacks revealing user existence
+                const dummyHash = "$2b$10$dummyhashpaddingtomatchbcrypttime.dummyvalue00";
+                const isPasswordValid = user?.password
+                    ? await bcrypt.compare(credentials.password as string, user.password)
+                    : (await bcrypt.compare(credentials.password as string, dummyHash), false);
+
+                if (!user || !user.password || !isPasswordValid) {
                     return null;
                 }
 
-                if (!user.emailVerified) {
-                    throw new Error("Email not verified!");
-                }
-
-                const isPasswordValid = await bcrypt.compare(
-                    credentials.password as string,
-                    user.password
-                );
-
-                if (!isPasswordValid) {
-                    return null;
-                }
+                // ── Additional guards (no descriptive errors — return null) ──
+                if (!user.emailVerified) return null;
+                if ((user as any).isBlocked) return null;
 
                 return user as unknown as AdapterUser;
             },

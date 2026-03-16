@@ -39,13 +39,12 @@ model User {
 }
 
 model RateLimit {
-  id        String   @id @default(cuid())
-  identifier String
-  count     Int      @default(0)
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-
-  @@unique([identifier])
+  id          String    @id @default(cuid())
+  identifier  String    @unique
+  count       Int       @default(0)
+  expiresAt   DateTime
+  lockedUntil DateTime? // set when account is temporarily locked
+  createdAt   DateTime  @default(now())
 }
 
 enum Role {
